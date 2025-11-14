@@ -10,14 +10,11 @@ ENV PYTHONUNBUFFERED=1 \
 # Directorio de trabajo
 WORKDIR /app
 
-# Copia solo requirements primero (para cache de Docker)
-COPY requirements-production.txt .
+# Copia todo el código primero
+COPY . .
 
 # Instala dependencias
 RUN pip install --no-cache-dir -r requirements-production.txt
-
-# Copia el resto del código
-COPY . .
 
 # Expone el puerto que usará Fly.io
 EXPOSE 8000
