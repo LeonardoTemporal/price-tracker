@@ -1,6 +1,10 @@
-# Configuración de Fly.io para Price Tracker API
-app = "price-tracker-api"
-primary_region = "mia"  # Miami - más cercano a ti
+# fly.toml app configuration file generated for rastreadorprecios on 2025-11-14T04:47:33-06:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'rastreadorprecios'
+primary_region = 'dfw'
 
 [build]
 
@@ -10,8 +14,9 @@ primary_region = "mia"  # Miami - más cercano a ti
   auto_stop_machines = false
   auto_start_machines = true
   min_machines_running = 1
+  processes = ['app']
 
 [[vm]]
-  cpu_kind = "shared"
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 256
