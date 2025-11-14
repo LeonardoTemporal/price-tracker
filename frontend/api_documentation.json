@@ -1,0 +1,1269 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Price Tracker API",
+    "description": "\n    ## API REST para rastrear precios de productos en línea\n    \n    Sistema multi-usuario con autenticación JWT que permite:\n    - Rastrear precios de productos de diferentes tiendas en línea\n    - Historial completo de cambios de precios\n    - Alertas cuando se alcanza el precio objetivo\n    - Gráficos de evolución de precios\n    - Soporte para múltiples sitios web (MercadoLibre, Amazon, eBay, etc.)\n    \n    ### Autenticación\n    Esta API utiliza JWT (JSON Web Tokens) para autenticación. Para usar los endpoints protegidos:\n    1. Registra un usuario en `/api/auth/register`\n    2. Inicia sesión en `/api/auth/login` para obtener tu token\n    3. Usa el token en el header: `Authorization: Bearer {token}`\n    \n    ### Tecnologías\n    - FastAPI 0.104.1\n    - PostgreSQL (Supabase)\n    - SQLAlchemy 2.0.44\n    - JWT Authentication\n    - bcrypt password hashing\n    - BeautifulSoup4 web scraping\n    \n    ### Desarrollador\n    **HellSpawn**\n    \n    Sistema desarrollado como proyecto profesional de rastreo de precios con arquitectura moderna y escalable.\n    \n    ### Enlaces\n    - Documentación interactiva: `/docs`\n    - Documentación alternativa: `/redoc`\n    - GitHub: [Próximamente]\n    ",
+    "contact": {
+      "name": "HellSpawn",
+      "email": "hellspawn@pricetracker.dev"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "3.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Register",
+        "description": "Registrar nuevo usuario\n\n- **email**: Email único del usuario\n- **username**: Nombre de usuario único (3-50 caracteres)\n- **password**: Contraseña (mínimo 6 caracteres)",
+        "operationId": "register_api_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Login",
+        "description": "Iniciar sesión y obtener token JWT\n\n- **username**: Nombre de usuario o email\n- **password**: Contraseña",
+        "operationId": "login_api_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_api_auth_login_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login/json": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Login Json",
+        "description": "Iniciar sesión con JSON (alternativa a form-data)\n\n- **username**: Nombre de usuario o email\n- **password**: Contraseña",
+        "operationId": "login_json_api_auth_login_json_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Get Current User Info",
+        "description": "Obtener información del usuario actual\nRequiere token JWT válido",
+        "operationId": "get_current_user_info_api_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/auth/me/deactivate": {
+      "put": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Deactivate Account",
+        "description": "Desactivar cuenta de usuario",
+        "operationId": "deactivate_account_api_auth_me_deactivate_put",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/productos/": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Listar Productos",
+        "description": "Obtener todos los productos del usuario actual\nRequiere autenticación",
+        "operationId": "listar_productos_api_productos__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Producto"
+                  },
+                  "type": "array",
+                  "title": "Response Listar Productos Api Productos  Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Crear Producto",
+        "description": "Crear un nuevo producto y obtener su precio inicial\nSe asocia automáticamente al usuario actual",
+        "operationId": "crear_producto_api_productos__post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductoCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/productos/{producto_id}": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Obtener Producto",
+        "description": "Obtener detalles de un producto específico con su historial\nSolo puede acceder el dueño del producto",
+        "operationId": "obtener_producto_api_productos__producto_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "producto_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Producto Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductoDetalle"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Actualizar Producto",
+        "description": "Actualizar información de un producto\nSolo puede actualizar el dueño del producto",
+        "operationId": "actualizar_producto_api_productos__producto_id__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "producto_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Producto Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductoUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Producto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Eliminar Producto",
+        "description": "Eliminar un producto y todo su historial\nSolo puede eliminar el dueño del producto",
+        "operationId": "eliminar_producto_api_productos__producto_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "producto_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Producto Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/productos/{producto_id}/actualizar-precio": {
+      "post": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Actualizar Precio",
+        "description": "Actualizar el precio de un producto específico\nRealiza scraping y guarda en historial",
+        "operationId": "actualizar_precio_api_productos__producto_id__actualizar_precio_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "producto_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Producto Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActualizarPrecioResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/productos/actualizar-todos": {
+      "post": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Actualizar Todos Precios",
+        "description": "Actualizar precios de todos los productos del usuario\nPuede tardar varios segundos dependiendo de la cantidad",
+        "operationId": "actualizar_todos_precios_api_productos_actualizar_todos_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ActualizarPrecioResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Actualizar Todos Precios Api Productos Actualizar Todos Post"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/productos/test-url": {
+      "post": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Test Url",
+        "description": "Probar si una URL es accesible y se puede extraer el precio\nNo requiere crear el producto",
+        "operationId": "test_url_api_productos_test_url_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestURLRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestURLResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/productos/estadisticas/resumen": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Obtener Estadisticas",
+        "description": "Obtener estadísticas generales del usuario\nTotal de productos, alertas activas, registros totales",
+        "operationId": "obtener_estadisticas_api_productos_estadisticas_resumen_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadisticasResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActualizarPrecioResponse": {
+        "properties": {
+          "exito": {
+            "type": "boolean",
+            "title": "Exito"
+          },
+          "mensaje": {
+            "type": "string",
+            "title": "Mensaje"
+          },
+          "producto_id": {
+            "type": "integer",
+            "title": "Producto Id"
+          },
+          "nombre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre"
+          },
+          "precio_actual": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Actual"
+          },
+          "precio_objetivo": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Objetivo"
+          },
+          "alerta": {
+            "type": "boolean",
+            "title": "Alerta",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "exito",
+          "mensaje",
+          "producto_id"
+        ],
+        "title": "ActualizarPrecioResponse"
+      },
+      "Body_login_api_auth_login_post": {
+        "properties": {
+          "grant_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^password$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "title": "Password"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "format": "password",
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_login_api_auth_login_post"
+      },
+      "EstadisticasResponse": {
+        "properties": {
+          "total_productos": {
+            "type": "integer",
+            "title": "Total Productos"
+          },
+          "total_alertas": {
+            "type": "integer",
+            "title": "Total Alertas"
+          },
+          "total_registros": {
+            "type": "integer",
+            "title": "Total Registros"
+          },
+          "ultimo_actualizado": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ultimo Actualizado"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_productos",
+          "total_alertas",
+          "total_registros"
+        ],
+        "title": "EstadisticasResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "PrecioHistorial": {
+        "properties": {
+          "fecha": {
+            "type": "string",
+            "title": "Fecha"
+          },
+          "precio": {
+            "type": "number",
+            "title": "Precio"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fecha",
+          "precio"
+        ],
+        "title": "PrecioHistorial"
+      },
+      "Producto": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Nombre",
+            "description": "Nombre del producto"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "URL del producto"
+          },
+          "precio_objetivo": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Objetivo",
+            "description": "Precio objetivo para alertas"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "activo": {
+            "type": "boolean",
+            "title": "Activo"
+          },
+          "fecha_creacion": {
+            "type": "string",
+            "title": "Fecha Creacion"
+          },
+          "precio_actual": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Actual"
+          },
+          "precio_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Min"
+          },
+          "precio_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Max"
+          },
+          "num_registros": {
+            "type": "integer",
+            "title": "Num Registros",
+            "default": 0
+          },
+          "alerta": {
+            "type": "boolean",
+            "title": "Alerta",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "url",
+          "id",
+          "activo",
+          "fecha_creacion"
+        ],
+        "title": "Producto"
+      },
+      "ProductoCreate": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Nombre",
+            "description": "Nombre del producto"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "URL del producto"
+          },
+          "precio_objetivo": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Objetivo",
+            "description": "Precio objetivo para alertas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "url"
+        ],
+        "title": "ProductoCreate"
+      },
+      "ProductoDetalle": {
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Nombre",
+            "description": "Nombre del producto"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "URL del producto"
+          },
+          "precio_objetivo": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Objetivo",
+            "description": "Precio objetivo para alertas"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "activo": {
+            "type": "boolean",
+            "title": "Activo"
+          },
+          "fecha_creacion": {
+            "type": "string",
+            "title": "Fecha Creacion"
+          },
+          "precio_actual": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Actual"
+          },
+          "precio_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Min"
+          },
+          "precio_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Max"
+          },
+          "num_registros": {
+            "type": "integer",
+            "title": "Num Registros",
+            "default": 0
+          },
+          "alerta": {
+            "type": "boolean",
+            "title": "Alerta",
+            "default": false
+          },
+          "historial": {
+            "items": {
+              "$ref": "#/components/schemas/PrecioHistorial"
+            },
+            "type": "array",
+            "title": "Historial",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombre",
+          "url",
+          "id",
+          "activo",
+          "fecha_creacion"
+        ],
+        "title": "ProductoDetalle"
+      },
+      "ProductoUpdate": {
+        "properties": {
+          "nombre": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre"
+          },
+          "precio_objetivo": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio Objetivo"
+          },
+          "activo": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Activo"
+          }
+        },
+        "type": "object",
+        "title": "ProductoUpdate"
+      },
+      "TestURLRequest": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "TestURLRequest"
+      },
+      "TestURLResponse": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "accesible": {
+            "type": "boolean",
+            "title": "Accesible"
+          },
+          "precio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precio"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "domain": {
+            "type": "string",
+            "title": "Domain"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "accesible",
+          "precio",
+          "error",
+          "domain"
+        ],
+        "title": "TestURLResponse"
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type",
+          "user"
+        ],
+        "title": "Token"
+      },
+      "User": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "username": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 3,
+            "title": "Username"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "username",
+          "id",
+          "is_active",
+          "created_at"
+        ],
+        "title": "User"
+      },
+      "UserCreate": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "username": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 3,
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6,
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "username",
+          "password"
+        ],
+        "title": "UserCreate"
+      },
+      "UserLogin": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "UserLogin"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "/api/auth/login"
+          }
+        }
+      }
+    }
+  }
+}

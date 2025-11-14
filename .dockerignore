@@ -1,0 +1,62 @@
+# Archivos que NO se copiarán al contenedor Docker
+# (hace el build más rápido y el contenedor más pequeño)
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Base de datos local
+*.db
+*.db-journal
+*.db.backup
+price_tracker.db*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Frontend (no necesario en backend)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.vercel/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentación y archivos de desarrollo
+README*.md
+MIGRATION*.md
+DESPLIEGUE.md
+API_README.md
+*.log
+
+# Otros archivos de configuración no necesarios
+.editorconfig
+.prettierrc
+.eslintrc*
