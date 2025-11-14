@@ -1,3 +1,4 @@
+# Production dependencies - Updated 2025-11-14
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 sqlalchemy==2.0.44
@@ -6,7 +7,7 @@ python-jose[cryptography]==3.5.0
 passlib[bcrypt]==1.7.4
 bcrypt==5.0.0
 python-multipart==0.0.6
-pydantic==2.5.0
+pydantic[email]==2.5.0
 pydantic-settings==2.1.0
 python-dotenv==1.0.0
 requests==2.31.0
