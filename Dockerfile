@@ -22,5 +22,5 @@ COPY . .
 # Expone el puerto que usará Fly.io
 EXPOSE 8000
 
-# Comando para iniciar la aplicación
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Comando para iniciar la aplicación (usa PORT si está definido, sino 8000)
+CMD uvicorn backend.app.main:app --host 0.0.0.0 --port ${PORT:-8000}
