@@ -96,11 +96,16 @@ class PriceScraper:
         
         # Para MercadoLibre, intentar primero la API pública antes del scraping tradicional
         if domain == 'mercadolibre':
-            api_price = self._get_mercadolibre_api_price(url)
-            if api_price is not None:
-                print(f"✅ Precio obtenido desde API oficial de MercadoLibre: ${api_price}")
-                return api_price
-            print("⚠️ API de MercadoLibre no devolvió precio, intentando scraping")
+            print("🔍 Detectado MercadoLibre, intentando API oficial primero...")
+            try:
+                api_price = self._get_mercadolibre_api_price(url)
+                if api_price is not None:
+                    print(f"✅ Precio obtenido desde API oficial de MercadoLibre: ${api_price}")
+                    return api_price
+                print("⚠️ API de MercadoLibre no devolvió precio, intentando scraping")
+            except Exception as e:
+                print(f"❌ Error al llamar API de MercadoLibre: {type(e).__name__}: {e}")
+                print("⚠️ Continuando con scraping...")
             if PLAYWRIGHT_AVAILABLE:
                 print("🎭 Usando Playwright para MercadoLibre...")
                 try:
