@@ -18,6 +18,13 @@ resend.api_key = os.getenv("RESEND_API_KEY")
 # Resend requiere usar onboarding@resend.dev para testing o un dominio verificado
 FROM_EMAIL = "onboarding@resend.dev"
 
+# Debug: Verificar configuración
+if not resend.api_key:
+    print("⚠️  WARNING: RESEND_API_KEY no está configurada")
+else:
+    print(f"✓ Resend API key configurada (longitud: {len(resend.api_key)})")
+    print(f"✓ Email de origen: {FROM_EMAIL}")
+
 
 def generate_verification_code() -> str:
     """Generar código de verificación de 6 dígitos"""
@@ -36,7 +43,12 @@ def send_verification_email(email: str, username: str, code: str) -> bool:
     Returns:
         bool: True si se envió exitosamente, False en caso contrario
     """
+    if not resend.api_key:
+        print("❌ Error: RESEND_API_KEY no configurada")
+        return False
+    
     try:
+        print(f"📧 Intentando enviar email a {email}...")
         params = {
             "from": f"Pricy Price Tracker <{FROM_EMAIL}>",
             "to": [email],
@@ -138,11 +150,16 @@ def send_verification_email(email: str, username: str, code: str) -> bool:
         }
         
         email_response = resend.Emails.send(params)
-        print(f"Email enviado exitosamente a {email}: {email_response}")
+        print(f"✅ Email enviado exitosamente a {email}")
+        print(f"   Response: {email_response}")
         return True
     
     except Exception as e:
-        print(f"Error al enviar email a {email}: {e}")
+        print(f"❌ Error al enviar email a {email}")
+        print(f"   Tipo de error: {type(e).__name__}")
+        print(f"   Mensaje: {str(e)}")
+        import traceback
+        print(f"   Traceback: {traceback.format_exc()}")
         return False
 
 

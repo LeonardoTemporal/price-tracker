@@ -65,8 +65,13 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, username, password) => {
     try {
       const response = await authAPI.register(email, username, password);
-      // Enviar código de verificación automáticamente
-      await authAPI.sendVerification(email);
+      // Intentar enviar código de verificación automáticamente
+      try {
+        await authAPI.sendVerification(email);
+      } catch (emailError) {
+        console.warn('No se pudo enviar el email automáticamente, pero el usuario fue creado:', emailError);
+        // No lanzar error, el usuario puede reenviar desde la página de verificación
+      }
       return response.data;
     } catch (error) {
       console.error('Error al registrar:', error);
