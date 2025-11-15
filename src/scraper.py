@@ -10,6 +10,16 @@ import re
 from typing import Optional, Dict
 import time
 from urllib.parse import urlparse
+import os
+
+# Intentar importar Playwright (opcional)
+try:
+    from src.scraper_playwright import PlaywrightScraper
+    PLAYWRIGHT_AVAILABLE = True
+    print("✓ Playwright disponible para scraping avanzado")
+except ImportError:
+    PLAYWRIGHT_AVAILABLE = False
+    print("⚠️  Playwright no disponible, usando scraping simple")
 
 
 class PriceScraper:
@@ -71,6 +81,8 @@ class PriceScraper:
     def get_price(self, url: str) -> Optional[float]:
         """
         Extrae el precio de una URL.
+        Intenta primero con Playwright (si está disponible) para sitios que detectan bots,
+        luego falla al método simple.
         
         Args:
             url: URL de la página del producto
@@ -78,6 +90,22 @@ class PriceScraper:
         Returns:
             Precio como float o None si no se pudo extraer
         """
+        domain = self._get_domain(url)
+        
+        # Para MercadoLibre, intentar con Playwright primero si está disponible
+        if domain == 'mercadolibre' and PLAYWRIGHT_AVAILABLE:
+            print("🎭 Usando Playwright para MercadoLibre...")
+            try:
+                with PlaywrightScraper() as pw_scraper:
+                    precio = pw_scraper.get_price(url)
+                    if precio:
+                        return precio
+                print("⚠️  Playwright falló, intentando método simple...")
+            except Exception as e:
+                print(f"❌ Error en Playwright: {e}")
+                print("⚠️  Fallando al método simple...")
+        
+        # Método simple con requests (fallback o para otros sitios)
         try:
             print(f"🔍 Intentando extraer precio de: {url}")
             
