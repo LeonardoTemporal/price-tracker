@@ -17,7 +17,7 @@ load_dotenv()
 # Añadir el directorio raíz al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from backend.app.routers import auth, productos_auth
+from backend.app.routers import auth, productos_auth, feedback
 from backend.app.database import init_db
 
 
@@ -121,6 +121,7 @@ async def health_check():
 # Incluir routers
 app.include_router(auth.router, prefix="/api")
 app.include_router(productos_auth.router, prefix="/api")
+app.include_router(feedback.router, prefix="/api")
 
 
 if __name__ == "__main__":

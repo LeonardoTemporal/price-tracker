@@ -41,11 +41,14 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
+    email_verified = Column(Boolean, default=False)
+    dark_mode = Column(Boolean, default=False)  # Preferencia de tema
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relaciones
     productos = relationship("Producto", back_populates="user", cascade="all, delete-orphan")
+    email_verifications = relationship("EmailVerification", back_populates="user", cascade="all, delete-orphan")
 
 
 class Producto(Base):
@@ -58,6 +61,7 @@ class Producto(Base):
     url = Column(String, nullable=False)
     precio_actual = Column(Float, nullable=True)
     precio_objetivo = Column(Float, nullable=True)
+    tienda = Column(String, nullable=True)  # Amazon, MercadoLibre, etc.
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -77,6 +81,36 @@ class HistorialPrecio(Base):
     
     # Relaciones
     producto = relationship("Producto", back_populates="historial")
+
+
+class EmailVerification(Base):
+    """Modelo de verificación de email"""
+    __tablename__ = "email_verifications"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    code = Column(String(6), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    is_used = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relaciones
+    user = relationship("User", back_populates="email_verifications")
+
+
+class Feedback(Base):
+    """Modelo de feedback de usuarios"""
+    __tablename__ = "feedback"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    email = Column(String, nullable=True)
+    mensaje = Column(String, nullable=False)
+    rating = Column(Integer, nullable=True)  # 1-5 estrellas
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relación
+    user = relationship("User")
 
 
 def get_db():

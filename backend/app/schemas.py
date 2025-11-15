@@ -27,10 +27,26 @@ class UserLogin(BaseModel):
 class User(UserBase):
     id: int
     is_active: bool
+    email_verified: bool
+    dark_mode: bool = False
     created_at: datetime
 
     class Config:
         from_attributes = True
+
+
+class UserUpdate(BaseModel):
+    username: Optional[str] = Field(None, min_length=3, max_length=50)
+    email: Optional[EmailStr] = None
+
+
+class PasswordUpdate(BaseModel):
+    current_password: str = Field(..., min_length=6)
+    new_password: str = Field(..., min_length=6, max_length=100)
+
+
+class ThemePreference(BaseModel):
+    dark_mode: bool
 
 
 class Token(BaseModel):
@@ -70,6 +86,8 @@ class Producto(ProductoBase):
     precio_max: Optional[float] = None
     num_registros: int = 0
     alerta: bool = False
+    tienda: Optional[str] = None
+    ahorro_porcentual: Optional[float] = None
 
     class Config:
         from_attributes = True
@@ -120,3 +138,38 @@ class EstadisticasResponse(BaseModel):
     total_alertas: int
     total_registros: int
     ultimo_actualizado: Optional[str] = None
+
+
+# ========== Schemas de Verificación de Email ==========
+
+class SendVerificationRequest(BaseModel):
+    email: EmailStr
+
+
+class VerifyEmailRequest(BaseModel):
+    email: EmailStr
+    code: str = Field(..., min_length=6, max_length=6)
+
+
+class VerifyEmailResponse(BaseModel):
+    message: str
+    email_verified: bool
+
+
+# ========== Schemas de Feedback ==========
+
+class FeedbackCreate(BaseModel):
+    mensaje: str = Field(..., min_length=10, max_length=1000)
+    email: Optional[EmailStr] = None
+    rating: Optional[int] = Field(None, ge=1, le=5)
+
+
+class FeedbackResponse(BaseModel):
+    id: int
+    mensaje: str
+    email: Optional[str]
+    rating: Optional[int]
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True

@@ -17,6 +17,7 @@ from ..schemas import (
     EstadisticasResponse, PrecioHistorial
 )
 from ..security import get_current_active_user
+from ..utils import detectar_tienda, calcular_ahorro_porcentual
 
 import sys
 import os
@@ -55,6 +56,9 @@ async def listar_productos(
         if p.precio_objetivo and p.precio_actual and p.precio_actual <= p.precio_objetivo:
             alerta = True
         
+        # Calcular ahorro porcentual
+        ahorro = calcular_ahorro_porcentual(p.precio_actual, precio_max) if p.precio_actual and precio_max else None
+        
         resultado.append(Producto(
             id=p.id,
             nombre=p.nombre,
@@ -66,7 +70,9 @@ async def listar_productos(
             precio_min=precio_min,
             precio_max=precio_max,
             num_registros=len(historial),
-            alerta=alerta
+            alerta=alerta,
+            tienda=p.tienda,
+            ahorro_porcentual=ahorro
         ))
     
     return resultado
@@ -145,7 +151,8 @@ async def crear_producto(
             nombre=producto.nombre,
             url=producto.url,
             precio_objetivo=producto.precio_objetivo,
-            precio_actual=precio_inicial
+            precio_actual=precio_inicial,
+            tienda=detectar_tienda(producto.url)
         )
         
         db.add(nuevo_producto)
@@ -176,7 +183,9 @@ async def crear_producto(
             precio_min=precio_inicial,
             precio_max=precio_inicial,
             num_registros=1 if precio_inicial else 0,
-            alerta=alerta
+            alerta=alerta,
+            tienda=nuevo_producto.tienda,
+            ahorro_porcentual=None
         )
     
     except Exception as e:
