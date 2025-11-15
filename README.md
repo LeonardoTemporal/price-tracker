@@ -433,20 +433,35 @@ Este script elimina la base de datos antigua y crea una nueva con todas las tabl
 - Asegúrate de tener el archivo `.env.local` configurado en frontend
 - Revisa que tu firewall permita conexiones en puertos 8000 y 5173
 
-## Licencia
+## 📄 Licencia
 
-Este proyecto es de código abierto y está disponible para uso educativo y personal.
+**Copyright © 2025 Leonardo Acosta (HellSpawn). Todos los Derechos Reservados.**
 
-## Autor
+Este proyecto tiene **licencia propietaria**. El código es visible públicamente para fines de demostración, portafolio y referencia educativa.
 
-**HellSpawn**
+**No se permite:**
+- Copiar, modificar o distribuir el código
+- Usar en proyectos comerciales o personales
+- Crear trabajos derivados
 
-Desarrollado como proyecto de aprendizaje de desarrollo full-stack con React, FastAPI, autenticación JWT y diseño responsive.
+Para uso educativo, colaboraciones o licenciamiento comercial, contacta a: **pricy.pricetracker@gmail.com**
 
-## Contribuciones
+Ver [LICENSE.md](LICENSE.md) para términos completos.
 
-Este es un proyecto educativo. Si encuentras errores, tienes sugerencias o quieres añadir características, las contribuciones son bienvenidas.
+## 👨‍💻 Autor
+
+**Leonardo Acosta (HellSpawn)**
+- Email: pricy.pricetracker@gmail.com
+- GitHub: [@LeonardoTemporal](https://github.com/LeonardoTemporal)
+
+Desarrollado como proyecto profesional full-stack con React, FastAPI, autenticación JWT, verificación de email y diseño responsive.
+
+## 🤝 Contribuciones
+
+Este es un proyecto propietario. Si deseas contribuir o sugerir mejoras, por favor contacta al autor.
 
 ---
+
+**Pricy Price Tracker** - Rastrea precios, ahorra dinero 🎯
 
 Desarrollado con pasión por el desarrollo web moderno y la automatización.
