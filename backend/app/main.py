@@ -129,22 +129,31 @@ allowed_origins_str = os.getenv(
 )
 allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",")]
 
-# Agregar origins comunes para desarrollo
-if "http://localhost:5173" not in allowed_origins:
-    allowed_origins.append("http://localhost:5173")
-if "http://localhost:5174" not in allowed_origins:
-    allowed_origins.append("http://localhost:5174")
+# Agregar origins comunes para desarrollo y producción
+development_origins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
+    "http://127.0.0.1:3000"
+]
 
-print(f"CORS allowed origins: {allowed_origins}")  # Debug
+for origin in development_origins:
+    if origin not in allowed_origins:
+        allowed_origins.append(origin)
+
+print(f"🌐 CORS allowed origins: {allowed_origins}")  # Debug
 
 # Configurar CORS - Debe ir ANTES de definir las rutas
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
     expose_headers=["*"],
+    max_age=3600,
 )
 
 
