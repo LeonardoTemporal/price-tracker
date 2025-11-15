@@ -455,11 +455,17 @@ async def clear_all_users(
         )
     
     try:
+        from sqlalchemy import text
+        
         # Contar usuarios actuales
         count = db.query(User).count()
         
-        # Eliminar todos los usuarios (CASCADE eliminará datos relacionados)
-        db.query(User).delete()
+        # Eliminar manualmente en orden para evitar problemas de FK
+        db.execute(text("DELETE FROM feedback"))
+        db.execute(text("DELETE FROM email_verifications"))
+        db.execute(text("DELETE FROM historial_precios"))
+        db.execute(text("DELETE FROM productos"))
+        db.execute(text("DELETE FROM users"))
         db.commit()
         
         return {
