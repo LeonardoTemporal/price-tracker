@@ -38,6 +38,10 @@ class PriceScraper:
                 'selectors': [
                     {'class': 'andes-money-amount__fraction'},
                     {'class': 'price-tag-fraction'},
+                    {'class': 'ui-pdp-price__second-line__main-price'},
+                    {'class': 'price-tag-amount'},
+                    {'attrs': {'data-testid': 'price-part'}},
+                    {'class': 'ui-pdp-price__part'},
                 ],
                 'clean_pattern': r'[^\d,.]'
             },
@@ -123,17 +127,20 @@ class PriceScraper:
         
         # Intenta cada selector configurado
         for selector in config['selectors']:
+            element = None
+            
             if 'class' in selector:
                 element = soup.find(class_=selector['class'])
             elif 'id' in selector:
                 element = soup.find(id=selector['id'])
-            else:
-                continue
+            elif 'attrs' in selector:
+                element = soup.find(attrs=selector['attrs'])
             
             if element:
                 precio_texto = element.get_text().strip()
                 precio = self._clean_price(precio_texto, config['clean_pattern'])
                 if precio is not None:
+                    print(f"✓ Precio encontrado con selector {selector}: {precio}")
                     return precio
         
         return None
