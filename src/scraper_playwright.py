@@ -4,11 +4,11 @@ Renderiza JavaScript como un navegador real
 
 Author: HellSpawn
 """
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
+from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
 from bs4 import BeautifulSoup
 import re
 from typing import Optional
-import time
+import asyncio
 
 
 class PlaywrightScraper:
@@ -20,11 +20,11 @@ class PlaywrightScraper:
         self.browser = None
         self.context = None
         
-    def __enter__(self):
+    async def __aenter__(self):
         """Context manager entry"""
-        self.playwright = sync_playwright().start()
+        self.playwright = await async_playwright().start()
         # Lanzar navegador en modo headless
-        self.browser = self.playwright.chromium.launch(
+        self.browser = await self.playwright.chromium.launch(
             headless=True,
             args=[
                 '--disable-blink-features=AutomationControlled',
@@ -33,7 +33,7 @@ class PlaywrightScraper:
             ]
         )
         # Crear contexto con configuración de navegador real
-        self.context = self.browser.new_context(
+        self.context = await self.browser.new_context(
             viewport={'width': 1920, 'height': 1080},
             user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             locale='es-MX',
@@ -41,16 +41,16 @@ class PlaywrightScraper:
         )
         return self
     
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit"""
         if self.context:
-            self.context.close()
+            await self.context.close()
         if self.browser:
-            self.browser.close()
+            await self.browser.close()
         if self.playwright:
-            self.playwright.stop()
+            await self.playwright.stop()
     
-    def get_price(self, url: str) -> Optional[float]:
+    async def get_price(self, url: str) -> Optional[float]:
         """
         Extrae el precio de una URL usando Playwright
         
@@ -63,17 +63,17 @@ class PlaywrightScraper:
         try:
             print(f"🌐 [Playwright] Navegando a: {url}")
             
-            page = self.context.new_page()
+            page = await self.context.new_page()
             
             # Navegar a la URL
-            page.goto(url, wait_until='networkidle', timeout=30000)
+            await page.goto(url, wait_until='networkidle', timeout=30000)
             
-            print(f"✓ Página cargada: {page.title()}")
+            print(f"✓ Página cargada: {await page.title()}")
             
             # Esperar a que el precio se cargue
             try:
                 # Esperar por selectores comunes de precio en MercadoLibre
-                page.wait_for_selector(
+                await page.wait_for_selector(
                     '.andes-money-amount__fraction, .price-tag-fraction, .ui-pdp-price__part',
                     timeout=10000
                 )
@@ -82,13 +82,13 @@ class PlaywrightScraper:
                 print("⚠️  Timeout esperando elemento de precio")
             
             # Esperar un momento adicional para que todo cargue
-            time.sleep(2)
+            await asyncio.sleep(2)
             
             # Obtener el HTML renderizado
-            html = page.content()
+            html = await page.content()
             
             # Cerrar la página
-            page.close()
+            await page.close()
             
             # Parsear con BeautifulSoup
             soup = BeautifulSoup(html, 'html.parser')
@@ -204,7 +204,7 @@ class PlaywrightScraper:
 
 
 # Función auxiliar para uso rápido
-def get_price(url: str) -> Optional[float]:
+async def get_price(url: str) -> Optional[float]:
     """
     Función auxiliar para extraer precio usando Playwright
     
@@ -214,5 +214,5 @@ def get_price(url: str) -> Optional[float]:
     Returns:
         Precio como float o None
     """
-    with PlaywrightScraper() as scraper:
-        return scraper.get_price(url)
+    async with PlaywrightScraper() as scraper:
+        return await scraper.get_price(url)

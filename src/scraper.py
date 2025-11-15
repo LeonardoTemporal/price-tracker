@@ -78,7 +78,7 @@ class PriceScraper:
             },
         }
     
-    def get_price(self, url: str) -> Optional[float]:
+    async def get_price(self, url: str) -> Optional[float]:
         """
         Extrae el precio de una URL.
         Intenta primero con Playwright (si está disponible) para sitios que detectan bots,
@@ -96,8 +96,8 @@ class PriceScraper:
         if domain == 'mercadolibre' and PLAYWRIGHT_AVAILABLE:
             print("🎭 Usando Playwright para MercadoLibre...")
             try:
-                with PlaywrightScraper() as pw_scraper:
-                    precio = pw_scraper.get_price(url)
+                async with PlaywrightScraper() as pw_scraper:
+                    precio = await pw_scraper.get_price(url)
                     if precio:
                         return precio
                 print("⚠️  Playwright falló, intentando método simple...")

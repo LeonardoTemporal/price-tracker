@@ -25,7 +25,7 @@ class Tracker:
         self.db = Database(db_path)
         self.scraper = PriceScraper()
     
-    def agregar_producto(self, nombre: str, url: str, precio_objetivo: Optional[float] = None) -> Dict:
+    async def agregar_producto(self, nombre: str, url: str, precio_objetivo: Optional[float] = None) -> Dict:
         """
         Añade un nuevo producto y obtiene su precio inicial.
         
@@ -40,7 +40,7 @@ class Tracker:
         try:
             # Primero prueba si se puede acceder a la URL y extraer el precio
             print(f"Probando URL: {url}")
-            precio_inicial = self.scraper.get_price(url)
+            precio_inicial = await self.scraper.get_price(url)
             
             if precio_inicial is None:
                 return {
@@ -75,7 +75,7 @@ class Tracker:
                 'producto_id': None
             }
     
-    def actualizar_precio(self, producto_id: int) -> Dict:
+    async def actualizar_precio(self, producto_id: int) -> Dict:
         """
         Actualiza el precio de un producto específico.
         
@@ -106,7 +106,7 @@ class Tracker:
                 }
             
             # Obtiene el precio actual
-            precio_actual = self.scraper.get_price(url)
+            precio_actual = await self.scraper.get_price(url)
             
             if precio_actual is None:
                 return {
@@ -140,7 +140,7 @@ class Tracker:
                 'producto_id': producto_id
             }
     
-    def actualizar_todos_los_precios(self) -> List[Dict]:
+    async def actualizar_todos_los_precios(self) -> List[Dict]:
         """
         Actualiza los precios de todos los productos activos.
         
@@ -152,11 +152,11 @@ class Tracker:
         
         for producto in productos:
             producto_id = producto[0]
-            resultado = self.actualizar_precio(producto_id)
+            resultado = await self.actualizar_precio(producto_id)
             resultados.append(resultado)
             
-            # Pausa breve entre peticiones para no sobrecargar los servidores
-            time.sleep(1)
+            # Pausa breve entre solicitudes para no sobrecargar los servidores
+            time.sleep(2)
         
         return resultados
     

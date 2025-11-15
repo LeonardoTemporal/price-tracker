@@ -98,7 +98,7 @@ async def obtener_producto(producto_id: int):
 async def crear_producto(producto: ProductoCreate):
     """Crea un nuevo producto y obtiene su precio inicial."""
     try:
-        resultado = tracker.agregar_producto(
+        resultado = await tracker.agregar_producto(
             nombre=producto.nombre,
             url=producto.url,
             precio_objetivo=producto.precio_objetivo
@@ -160,7 +160,7 @@ async def eliminar_producto(producto_id: int):
 async def actualizar_precio(producto_id: int):
     """Actualiza el precio de un producto específico."""
     try:
-        resultado = tracker.actualizar_precio(producto_id)
+        resultado = await tracker.actualizar_precio(producto_id)
         
         if not resultado['exito']:
             raise HTTPException(status_code=400, detail=resultado['mensaje'])
@@ -176,7 +176,7 @@ async def actualizar_precio(producto_id: int):
 async def actualizar_todos_precios():
     """Actualiza los precios de todos los productos activos."""
     try:
-        resultados = tracker.actualizar_todos_los_precios()
+        resultados = await tracker.actualizar_todos_los_precios()
         return [ActualizarPrecioResponse(**r) for r in resultados]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
