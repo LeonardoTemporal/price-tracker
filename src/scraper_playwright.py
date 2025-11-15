@@ -22,7 +22,9 @@ class PlaywrightScraper:
         
     async def __aenter__(self):
         """Context manager entry"""
+        print("🎬 [Playwright] Iniciando playwright...")
         self.playwright = await async_playwright().start()
+        print("🎬 [Playwright] Lanzando navegador Chromium...")
         # Lanzar navegador en modo headless
         self.browser = await self.playwright.chromium.launch(
             headless=True,
@@ -32,6 +34,7 @@ class PlaywrightScraper:
                 '--disable-dev-shm-usage',
             ]
         )
+        print("🎬 [Playwright] Creando contexto del navegador...")
         # Crear contexto con configuración de navegador real
         self.context = await self.browser.new_context(
             viewport={'width': 1920, 'height': 1080},
@@ -39,6 +42,7 @@ class PlaywrightScraper:
             locale='es-MX',
             timezone_id='America/Mexico_City',
         )
+        print("✅ [Playwright] Contexto creado exitosamente")
         return self
     
     async def __aexit__(self, exc_type, exc_val, exc_tb):

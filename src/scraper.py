@@ -90,22 +90,33 @@ class PriceScraper:
         Returns:
             Precio como float o None si no se pudo extraer
         """
+        print(f"🚀 [get_price] Iniciando extracción para: {url}")
         domain = self._get_domain(url)
+        print(f"🌐 [get_price] Dominio detectado: {domain}")
         
         # Para MercadoLibre, intentar con Playwright primero si está disponible
         if domain == 'mercadolibre' and PLAYWRIGHT_AVAILABLE:
             print("🎭 Usando Playwright para MercadoLibre...")
             try:
                 async with PlaywrightScraper() as pw_scraper:
+                    print("✓ PlaywrightScraper inicializado")
                     precio = await pw_scraper.get_price(url)
+                    print(f"📊 Playwright retornó: {precio}")
                     if precio:
+                        print(f"✅ Precio extraído exitosamente con Playwright: ${precio}")
                         return precio
+                    print("⚠️ Playwright retornó None")
                 print("⚠️  Playwright falló, intentando método simple...")
             except Exception as e:
-                print(f"❌ Error en Playwright: {e}")
+                print(f"❌ Error en Playwright: {type(e).__name__}: {e}")
+                import traceback
+                print(traceback.format_exc())
                 print("⚠️  Fallando al método simple...")
+        elif domain == 'mercadolibre':
+            print("⚠️ Playwright NO disponible para MercadoLibre")
         
         # Método simple con requests (fallback o para otros sitios)
+        print("🔄 Usando método simple con requests...")
         try:
             print(f"🔍 Intentando extraer precio de: {url}")
             

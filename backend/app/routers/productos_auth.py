@@ -385,10 +385,15 @@ async def test_url(
     No requiere crear el producto
     """
     try:
+        print(f"🔍 [test_url] Probando URL: {request.url}")
         precio = await scraper.get_price(request.url)
+        print(f"📊 [test_url] Precio obtenido: {precio}")
         
         from urllib.parse import urlparse
         domain = urlparse(request.url).netloc
+        
+        if precio is None:
+            print("⚠️ [test_url] Precio es None, retornando error")
         
         return TestURLResponse(
             url=request.url,
@@ -399,6 +404,9 @@ async def test_url(
         )
     
     except Exception as e:
+        print(f"❌ [test_url] Excepción capturada: {type(e).__name__}: {e}")
+        import traceback
+        print(traceback.format_exc())
         return TestURLResponse(
             url=request.url,
             accesible=False,
