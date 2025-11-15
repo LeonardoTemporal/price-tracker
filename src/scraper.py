@@ -18,10 +18,24 @@ class PriceScraper:
     def __init__(self):
         """Inicializa el scraper con headers para simular un navegador."""
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'es-MX,es;q=0.9,en;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+            'Sec-Ch-Ua-Mobile': '?0',
+            'Sec-Ch-Ua-Platform': '"Windows"',
+            'Cache-Control': 'max-age=0',
         }
+        
+        # Crear sesión para mantener cookies
+        self.session = requests.Session()
+        self.session.headers.update(self.headers)
         
         # Configuraciones específicas por dominio
         self.domain_configs = {
@@ -67,11 +81,12 @@ class PriceScraper:
         try:
             print(f"🔍 Intentando extraer precio de: {url}")
             
-            # Realiza la petición HTTP
-            response = requests.get(url, headers=self.headers, timeout=10)
+            # Realiza la petición HTTP usando la sesión
+            response = self.session.get(url, timeout=15, allow_redirects=True)
             response.raise_for_status()
             
             print(f"✓ Respuesta HTTP {response.status_code}")
+            print(f"📍 URL final (después de redirects): {response.url}")
             
             # Parsea el HTML
             soup = BeautifulSoup(response.content, 'html.parser')
@@ -243,7 +258,8 @@ class PriceScraper:
         }
         
         try:
-            response = requests.get(url, headers=self.headers, timeout=10)
+            # Realiza la petición HTTP usando la sesión
+            response = self.session.get(url, timeout=15, allow_redirects=True)
             resultado['accesible'] = response.status_code == 200
             
             if resultado['accesible']:
