@@ -65,20 +65,35 @@ class PriceScraper:
             Precio como float o None si no se pudo extraer
         """
         try:
+            print(f"🔍 Intentando extraer precio de: {url}")
+            
             # Realiza la petición HTTP
             response = requests.get(url, headers=self.headers, timeout=10)
             response.raise_for_status()
+            
+            print(f"✓ Respuesta HTTP {response.status_code}")
             
             # Parsea el HTML
             soup = BeautifulSoup(response.content, 'html.parser')
             
             # Intenta extraer el precio usando configuraciones específicas del dominio
             domain = self._get_domain(url)
+            print(f"🌐 Dominio detectado: {domain}")
+            
             precio = self._extract_price_by_domain(soup, domain)
             
             # Si no funcionó, intenta métodos genéricos
             if precio is None:
+                print("⚠️  Selectores de dominio fallaron, intentando métodos genéricos...")
                 precio = self._extract_price_generic(soup)
+            
+            if precio:
+                print(f"💰 Precio encontrado: ${precio}")
+            else:
+                print("❌ No se pudo extraer el precio")
+                # Guardar HTML para debug
+                print(f"📄 Primeros 500 caracteres del HTML:")
+                print(soup.get_text()[:500])
             
             return precio
             
