@@ -438,7 +438,7 @@ async def delete_account(
     }
 
 
-@router.delete("/admin/clear-all-users")
+@router.get("/admin/clear-all-users")
 async def clear_all_users(
     admin_secret: str,
     db: Session = Depends(get_db)
