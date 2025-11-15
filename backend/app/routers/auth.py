@@ -31,6 +31,23 @@ from ..services.email_service import (
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
 
+@router.get("/check-username/{username}")
+async def check_username_availability(username: str, db: Session = Depends(get_db)):
+    """
+    Verificar si un nombre de usuario está disponible
+    
+    - **username**: Nombre de usuario a verificar
+    
+    Returns:
+    - **available**: True si está disponible, False si ya está en uso
+    """
+    existing_user = db.query(User).filter(User.username == username).first()
+    return {
+        "username": username,
+        "available": existing_user is None
+    }
+
+
 @router.post("/register", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     """

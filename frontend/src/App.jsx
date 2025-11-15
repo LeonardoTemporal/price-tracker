@@ -11,6 +11,7 @@ import ProductDetail from './components/ProductDetail';
 import AddProduct from './components/AddProduct';
 import Login from './components/Login';
 import Register from './components/Register';
+import EmailVerification from './components/EmailVerification';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -26,6 +27,10 @@ function App() {
       <Route 
         path="/register" 
         element={isAuthenticated ? <Navigate to="/" replace /> : <Register />} 
+      />
+      <Route 
+        path="/verify-email" 
+        element={isAuthenticated ? <Navigate to="/" replace /> : <EmailVerification />} 
       />
 
       {/* Protected Routes */}

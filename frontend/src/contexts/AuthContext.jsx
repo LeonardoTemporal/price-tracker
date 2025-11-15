@@ -64,15 +64,13 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, username, password) => {
     try {
-      await authAPI.register(email, username, password);
-      // Después de registrar, iniciar sesión automáticamente
-      return await login(username, password);
+      const response = await authAPI.register(email, username, password);
+      // Enviar código de verificación automáticamente
+      await authAPI.sendVerification(email);
+      return response.data;
     } catch (error) {
       console.error('Error al registrar:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.detail || 'Error al registrarse' 
-      };
+      throw error;
     }
   };
 

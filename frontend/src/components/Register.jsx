@@ -2,10 +2,11 @@
  * Register Page
  * Author: HellSpawn
  */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Check, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { authAPI } from '../services/api';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -18,8 +19,32 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [usernameAvailable, setUsernameAvailable] = useState(null);
+  const [checkingUsername, setCheckingUsername] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkUsername = async () => {
+      if (formData.username.length < 3) {
+        setUsernameAvailable(null);
+        return;
+      }
+
+      setCheckingUsername(true);
+      try {
+        const response = await authAPI.checkUsername(formData.username);
+        setUsernameAvailable(response.data.available);
+      } catch (error) {
+        setUsernameAvailable(null);
+      } finally {
+        setCheckingUsername(false);
+      }
+    };
+
+    const timeoutId = setTimeout(checkUsername, 500);
+    return () => clearTimeout(timeoutId);
+  }, [formData.username]);
 
   const handleChange = (e) => {
     setFormData({
@@ -49,15 +74,22 @@ export default function Register() {
     }
 
     setLoading(true);
-    const result = await register(formData.email, formData.username, formData.password);
     
-    if (result.success) {
-      navigate('/');
-    } else {
-      setError(result.error);
+    try {
+      await register(formData.email, formData.username, formData.password);
+      // Redirigir a verificación de email
+      navigate('/verify-email', {
+        state: {
+          email: formData.email,
+          username: formData.username,
+          password: formData.password
+        }
+      });
+    } catch (error) {
+      setError(error.response?.data?.detail || 'Error al registrarse');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -98,19 +130,39 @@ export default function Register() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Usuario
             </label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="usuario123"
-              required
-              minLength={3}
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Mínimo 3 caracteres
-            </p>
+            <div className="relative">
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 pr-12"
+                placeholder="usuario123"
+                required
+                minLength={3}
+              />
+              {formData.username.length >= 3 && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  {checkingUsername ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-purple-600"></div>
+                  ) : usernameAvailable === true ? (
+                    <Check className="w-5 h-5 text-green-500" />
+                  ) : usernameAvailable === false ? (
+                    <X className="w-5 h-5 text-red-500" />
+                  ) : null}
+                </div>
+              )}
+            </div>
+            <div className="flex items-center justify-between mt-1">
+              <p className="text-xs text-gray-500">
+                Mínimo 3 caracteres
+              </p>
+              {formData.username.length >= 3 && usernameAvailable !== null && (
+                <p className={`text-xs ${usernameAvailable ? 'text-green-600' : 'text-red-600'}`}>
+                  {usernameAvailable ? 'Disponible' : 'No disponible'}
+                </p>
+              )}
+            </div>
           </div>
 
           <div>

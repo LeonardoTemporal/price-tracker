@@ -56,7 +56,19 @@ export const authAPI = {
   },
   register: (email, username, password) => 
     api.post('/auth/register', { email, username, password }),
+  checkUsername: (username) =>
+    api.get(`/auth/check-username/${username}`),
+  sendVerification: (email) =>
+    api.post('/auth/send-verification', { email }),
+  verifyEmail: (email, code) =>
+    api.post('/auth/verify-email', { email, code }),
   me: () => api.get('/auth/me'),
+  updateProfile: (data) => api.put('/auth/me/profile', data),
+  updatePassword: (currentPassword, newPassword) =>
+    api.put('/auth/me/password', { current_password: currentPassword, new_password: newPassword }),
+  updateTheme: (darkMode) =>
+    api.put('/auth/me/theme', { dark_mode: darkMode }),
+  deleteAccount: () => api.delete('/auth/me/account'),
   logout: () => {
     localStorage.removeItem('token');
   },
