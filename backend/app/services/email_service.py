@@ -15,7 +15,8 @@ load_dotenv()
 
 # Configuración de Resend
 resend.api_key = os.getenv("RESEND_API_KEY")
-FROM_EMAIL = os.getenv("FROM_EMAIL", "pricy.pricetracker@gmail.com")
+# Resend requiere usar onboarding@resend.dev para testing o un dominio verificado
+FROM_EMAIL = "onboarding@resend.dev"
 
 
 def generate_verification_code() -> str:
