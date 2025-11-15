@@ -267,7 +267,7 @@ class PriceScraper:
         except (ValueError, AttributeError):
             return None
     
-    def test_url(self, url: str) -> Dict:
+    async def test_url(self, url: str) -> Dict:
         """
         Prueba una URL y retorna información de diagnóstico.
         
@@ -292,7 +292,7 @@ class PriceScraper:
             
             if resultado['accesible']:
                 soup = BeautifulSoup(response.content, 'html.parser')
-                precio = self.get_price(url)
+                precio = await self.get_price(url)
                 resultado['precio'] = precio
                 
                 if precio is None:

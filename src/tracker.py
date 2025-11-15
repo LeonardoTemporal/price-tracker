@@ -226,7 +226,7 @@ class Tracker:
         
         return resultado
     
-    def probar_url(self, url: str) -> Dict:
+    async def probar_url(self, url: str) -> Dict:
         """
         Prueba si una URL es válida y se puede extraer el precio.
         
@@ -236,4 +236,4 @@ class Tracker:
         Returns:
             Diccionario con información de la prueba
         """
-        return self.scraper.test_url(url)
+        return await self.scraper.test_url(url)

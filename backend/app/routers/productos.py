@@ -186,7 +186,7 @@ async def actualizar_todos_precios():
 async def test_url(request: TestURLRequest):
     """Prueba si una URL es válida y se puede extraer el precio."""
     try:
-        resultado = tracker.probar_url(request.url)
+        resultado = await tracker.probar_url(request.url)
         return TestURLResponse(**resultado)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
