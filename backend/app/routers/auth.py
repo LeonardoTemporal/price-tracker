@@ -436,3 +436,39 @@ async def delete_account(
         "message": "Cuenta desactivada exitosamente",
         "note": "Tus datos se han conservado. Contacta al soporte para reactivar tu cuenta."
     }
+
+
+@router.delete("/admin/clear-all-users")
+async def clear_all_users(
+    admin_secret: str,
+    db: Session = Depends(get_db)
+):
+    """
+    ADMIN: Eliminar todos los usuarios de la base de datos
+    Requiere admin_secret para autorización
+    """
+    # Verificar secret
+    if admin_secret != "HellSpawn2025":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No autorizado"
+        )
+    
+    try:
+        # Contar usuarios actuales
+        count = db.query(User).count()
+        
+        # Eliminar todos los usuarios (CASCADE eliminará datos relacionados)
+        db.query(User).delete()
+        db.commit()
+        
+        return {
+            "message": "Todos los usuarios eliminados",
+            "usuarios_eliminados": count
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al eliminar usuarios: {str(e)}"
+        )
