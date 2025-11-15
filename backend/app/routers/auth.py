@@ -41,11 +41,18 @@ async def check_username_availability(username: str, db: Session = Depends(get_d
     Returns:
     - **available**: True si está disponible, False si ya está en uso
     """
-    existing_user = db.query(User).filter(User.username == username).first()
-    return {
-        "username": username,
-        "available": existing_user is None
-    }
+    try:
+        existing_user = db.query(User).filter(User.username == username).first()
+        return {
+            "username": username,
+            "available": existing_user is None
+        }
+    except Exception as e:
+        print(f"Error checking username: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al verificar disponibilidad: {str(e)}"
+        )
 
 
 @router.post("/register", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
