@@ -57,8 +57,8 @@ COPY . .
 # Instala dependencias de Python
 RUN pip install --no-cache-dir -r requirements-production.txt
 
-# Instala navegadores de Playwright
-RUN playwright install chromium --with-deps
+# Instala solo el navegador Chromium (sin --with-deps para evitar conflictos)
+RUN playwright install chromium
 
 # Expone el puerto que usará Render
 EXPOSE 8000
