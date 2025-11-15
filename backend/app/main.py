@@ -84,13 +84,19 @@ app = FastAPI(
 )
 
 # Obtener orígenes permitidos desde .env
-allowed_origins = os.getenv(
+allowed_origins_str = os.getenv(
     "ALLOWED_ORIGINS",
     "http://localhost:5173,http://localhost:5174,http://localhost:3000"
-).split(",")
+)
+allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",")]
 
-# Limpiar espacios en blanco de cada origen
-allowed_origins = [origin.strip() for origin in allowed_origins]
+# Agregar origins comunes para desarrollo
+if "http://localhost:5173" not in allowed_origins:
+    allowed_origins.append("http://localhost:5173")
+if "http://localhost:5174" not in allowed_origins:
+    allowed_origins.append("http://localhost:5174")
+
+print(f"CORS allowed origins: {allowed_origins}")  # Debug
 
 # Configurar CORS - Debe ir ANTES de definir las rutas
 app.add_middleware(
