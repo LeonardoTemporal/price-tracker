@@ -143,50 +143,9 @@ async def crear_producto(
     """
     try:
         # Obtener precio inicial
-        precio_inicial = scraper.get_price(producto.url)
+        precio_inicial = await scraper.get_price(producto.url)
         
         # Crear producto
-        nuevo_producto = ProductoModel(
-            user_id=current_user.id,
-            nombre=producto.nombre,
-            url=producto.url,
-            precio_objetivo=producto.precio_objetivo,
-            precio_actual=precio_inicial,
-            tienda=detectar_tienda(producto.url)
-        )
-        
-        db.add(nuevo_producto)
-        db.commit()
-        db.refresh(nuevo_producto)
-        
-        # Agregar precio al historial
-        if precio_inicial:
-            historial = HistorialPrecio(
-                producto_id=nuevo_producto.id,
-                precio=precio_inicial
-            )
-            db.add(historial)
-            db.commit()
-        
-        alerta = False
-        if producto.precio_objetivo and precio_inicial and precio_inicial <= producto.precio_objetivo:
-            alerta = True
-        
-        return Producto(
-            id=nuevo_producto.id,
-            nombre=nuevo_producto.nombre,
-            url=nuevo_producto.url,
-            precio_objetivo=nuevo_producto.precio_objetivo,
-            activo=True,
-            fecha_creacion=nuevo_producto.created_at.isoformat(),
-            precio_actual=precio_inicial,
-            precio_min=precio_inicial,
-            precio_max=precio_inicial,
-            num_registros=1 if precio_inicial else 0,
-            alerta=alerta,
-            tienda=nuevo_producto.tienda,
-            ahorro_porcentual=None
-        )
     
     except Exception as e:
         db.rollback()
@@ -305,7 +264,7 @@ async def actualizar_precio(
     
     try:
         # Obtener nuevo precio
-        nuevo_precio = scraper.get_price(producto.url)
+        nuevo_precio = await scraper.get_price(producto.url)
         
         if nuevo_precio is None:
             return ActualizarPrecioResponse(
@@ -369,7 +328,7 @@ async def actualizar_todos_precios(
     
     for producto in productos:
         try:
-            nuevo_precio = scraper.get_price(producto.url)
+            nuevo_precio = await scraper.get_price(producto.url)
             
             if nuevo_precio is None:
                 resultados.append(ActualizarPrecioResponse(
@@ -426,7 +385,7 @@ async def test_url(
     No requiere crear el producto
     """
     try:
-        precio = scraper.get_price(request.url)
+        precio = await scraper.get_price(request.url)
         
         from urllib.parse import urlparse
         domain = urlparse(request.url).netloc
