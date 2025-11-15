@@ -92,9 +92,18 @@ python -m venv .venv
 # Instalar dependencias
 pip install -r backend/requirements.txt
 
+# Instalar navegadores de Playwright (solo la primera vez)
+playwright install chromium
+
 # Iniciar servidor (con recarga automática)
 python -m uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+#### Pruebas automatizadas del backend
+```cmd
+python -m pytest backend/tests
+```
+Este comando levanta una base SQLite temporal y usa un scraper falso, por lo que puedes ejecutarlo sin dependencias externas ni conexiones a tiendas reales.
 
 #### 2. Frontend
 ```cmd
@@ -227,7 +236,7 @@ RastreadorPrecios/
 El scraper incluye configuraciones específicas optimizadas para:
 
 ### Sitios Soportados
-- **Mercado Libre**: Totalmente compatible (probado y funcional)
+- **Mercado Libre**: Totalmente compatible (probado y funcional). El scraper intenta primero la API pública de Mercado Libre para obtener el precio y, si falla, recurre a Playwright o al parser tradicional.
 - **Amazon**: Soporte para múltiples selectores de precio
 - **eBay**: Configuración específica para sus elementos
 
@@ -433,7 +442,7 @@ Este script elimina la base de datos antigua y crea una nueva con todas las tabl
 - Asegúrate de tener el archivo `.env.local` configurado en frontend
 - Revisa que tu firewall permita conexiones en puertos 8000 y 5173
 
-## 📄 Licencia
+## Licencia
 
 **Copyright © 2025 Leonardo Acosta (HellSpawn). Todos los Derechos Reservados.**
 
@@ -448,7 +457,7 @@ Para uso educativo, colaboraciones o licenciamiento comercial, contacta a: **pri
 
 Ver [LICENSE.md](LICENSE.md) para términos completos.
 
-## 👨‍💻 Autor
+## Autor
 
 **Leonardo Acosta (HellSpawn)**
 - Email: pricy.pricetracker@gmail.com
@@ -456,12 +465,12 @@ Ver [LICENSE.md](LICENSE.md) para términos completos.
 
 Desarrollado como proyecto profesional full-stack con React, FastAPI, autenticación JWT, verificación de email y diseño responsive.
 
-## 🤝 Contribuciones
+## Contribuciones
 
 Este es un proyecto propietario. Si deseas contribuir o sugerir mejoras, por favor contacta al autor.
 
 ---
 
-**Pricy Price Tracker** - Rastrea precios, ahorra dinero 🎯
+**Pricy Price Tracker** - Rastrea precios, ahorra dinero
 
 Desarrollado con pasión por el desarrollo web moderno y la automatización.

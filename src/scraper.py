@@ -94,26 +94,32 @@ class PriceScraper:
         domain = self._get_domain(url)
         print(f"🌐 [get_price] Dominio detectado: {domain}")
         
-        # Para MercadoLibre, intentar con Playwright primero si está disponible
-        if domain == 'mercadolibre' and PLAYWRIGHT_AVAILABLE:
-            print("🎭 Usando Playwright para MercadoLibre...")
-            try:
-                async with PlaywrightScraper() as pw_scraper:
-                    print("✓ PlaywrightScraper inicializado")
-                    precio = await pw_scraper.get_price(url)
-                    print(f"📊 Playwright retornó: {precio}")
-                    if precio:
-                        print(f"✅ Precio extraído exitosamente con Playwright: ${precio}")
-                        return precio
-                    print("⚠️ Playwright retornó None")
-                print("⚠️  Playwright falló, intentando método simple...")
-            except Exception as e:
-                print(f"❌ Error en Playwright: {type(e).__name__}: {e}")
-                import traceback
-                print(traceback.format_exc())
-                print("⚠️  Fallando al método simple...")
-        elif domain == 'mercadolibre':
-            print("⚠️ Playwright NO disponible para MercadoLibre")
+        # Para MercadoLibre, intentar primero la API pública antes del scraping tradicional
+        if domain == 'mercadolibre':
+            api_price = self._get_mercadolibre_api_price(url)
+            if api_price is not None:
+                print(f"✅ Precio obtenido desde API oficial de MercadoLibre: ${api_price}")
+                return api_price
+            print("⚠️ API de MercadoLibre no devolvió precio, intentando scraping")
+            if PLAYWRIGHT_AVAILABLE:
+                print("🎭 Usando Playwright para MercadoLibre...")
+                try:
+                    async with PlaywrightScraper() as pw_scraper:
+                        print("✓ PlaywrightScraper inicializado")
+                        precio = await pw_scraper.get_price(url)
+                        print(f"📊 Playwright retornó: {precio}")
+                        if precio:
+                            print(f"✅ Precio extraído exitosamente con Playwright: ${precio}")
+                            return precio
+                        print("⚠️ Playwright retornó None")
+                    print("⚠️  Playwright falló, intentando método simple...")
+                except Exception as e:
+                    print(f"❌ Error en Playwright: {type(e).__name__}: {e}")
+                    import traceback
+                    print(traceback.format_exc())
+                    print("⚠️  Fallando al método simple...")
+            else:
+                print("⚠️ Playwright NO disponible para MercadoLibre")
         
         # Método simple con requests (fallback o para otros sitios)
         print("🔄 Usando método simple con requests...")
@@ -276,6 +282,41 @@ class PriceScraper:
             return precio if precio > 0 else None
             
         except (ValueError, AttributeError):
+            return None
+
+    def _extract_mercadolibre_item_id(self, url: str) -> Optional[str]:
+        """Obtiene el ID del listado de MercadoLibre (MLM/MLA/etc)."""
+        matches = re.findall(r"ML[A-Z]{2}\d+", url.upper())
+        return matches[0] if matches else None
+
+    def _get_mercadolibre_api_price(self, url: str) -> Optional[float]:
+        """Consulta la API pública de MercadoLibre para obtener el precio si es posible."""
+        item_id = self._extract_mercadolibre_item_id(url)
+        if not item_id:
+            print("⚠️ No se pudo extraer el ID de MercadoLibre de la URL")
+            return None
+        api_url = f"https://api.mercadolibre.com/items/{item_id}"
+        print(f"🌐 Consultando API de MercadoLibre: {api_url}")
+        try:
+            response = self.session.get(api_url, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            price_fields = [
+                data.get('price'),
+                data.get('base_price'),
+                data.get('original_price'),
+            ]
+            # Algunos listados tienen estructura prices.prices[0].amount
+            if not any(price_fields) and isinstance(data.get('prices'), dict):
+                price_entries = data['prices'].get('prices') or []
+                if price_entries:
+                    price_fields.append(price_entries[0].get('amount'))
+            price = next((p for p in price_fields if isinstance(p, (int, float)) and p > 0), None)
+            if price is None:
+                print("⚠️ API respondió pero sin precio válido")
+            return float(price) if price else None
+        except requests.RequestException as exc:
+            print(f"❌ Error al consultar API de MercadoLibre: {exc}")
             return None
     
     async def test_url(self, url: str) -> Dict:

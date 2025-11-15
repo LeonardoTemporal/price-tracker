@@ -141,12 +141,76 @@ async def crear_producto(
     Crear un nuevo producto y obtener su precio inicial
     Se asocia automáticamente al usuario actual
     """
+    # Verificar duplicados por URL para el mismo usuario
+    existente = db.query(ProductoModel).filter(
+        ProductoModel.user_id == current_user.id,
+        ProductoModel.url == producto.url
+    ).first()
+    if existente:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Este producto ya fue registrado"
+        )
+
     try:
-        # Obtener precio inicial
-        precio_inicial = await scraper.get_price(producto.url)
+        precio_inicial = None
+        try:
+            precio_inicial = await scraper.get_price(producto.url)
+        except Exception as scraping_error:
+            # Log y continuar para permitir registro manual
+            print(f"Error al obtener precio inicial: {scraping_error}")
         
-        # Crear producto
-    
+        nueva_tienda = detectar_tienda(producto.url)
+        nuevo_producto = ProductoModel(
+            user_id=current_user.id,
+            nombre=producto.nombre,
+            url=producto.url,
+            precio_objetivo=producto.precio_objetivo,
+            precio_actual=precio_inicial,
+            tienda=nueva_tienda
+        )
+        
+        db.add(nuevo_producto)
+        db.flush()
+        
+        if precio_inicial is not None:
+            historial = HistorialPrecio(
+                producto_id=nuevo_producto.id,
+                precio=precio_inicial
+            )
+            db.add(historial)
+        
+        db.commit()
+        db.refresh(nuevo_producto)
+        
+        historial_registros = db.query(HistorialPrecio).filter(
+            HistorialPrecio.producto_id == nuevo_producto.id
+        ).all()
+        precios = [registro.precio for registro in historial_registros]
+        precio_min = min(precios) if precios else None
+        precio_max = max(precios) if precios else None
+        ahorro = calcular_ahorro_porcentual(nuevo_producto.precio_actual, precio_max) if nuevo_producto.precio_actual and precio_max else None
+        alerta = False
+        if nuevo_producto.precio_objetivo and nuevo_producto.precio_actual and nuevo_producto.precio_actual <= nuevo_producto.precio_objetivo:
+            alerta = True
+        
+        return Producto(
+            id=nuevo_producto.id,
+            nombre=nuevo_producto.nombre,
+            url=nuevo_producto.url,
+            precio_objetivo=nuevo_producto.precio_objetivo,
+            activo=True,
+            fecha_creacion=nuevo_producto.created_at.isoformat(),
+            precio_actual=nuevo_producto.precio_actual,
+            precio_min=precio_min,
+            precio_max=precio_max,
+            num_registros=len(historial_registros),
+            alerta=alerta,
+            tienda=nuevo_producto.tienda,
+            ahorro_porcentual=ahorro
+        )
+    except HTTPException:
+        raise
     except Exception as e:
         db.rollback()
         raise HTTPException(
