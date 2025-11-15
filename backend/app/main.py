@@ -24,10 +24,49 @@ from backend.app.database import init_db
 # Configuración de eventos de inicio/cierre
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
+    # Startup: inicializar base de datos y ejecutar migraciones
     print("Iniciando Price Tracker API v3.0 con autenticación...")
     print("Inicializando base de datos...")
     init_db()
+    print("Ejecutando migraciones de base de datos...")
+    from sqlalchemy import text
+    from backend.app.database import engine
+    try:
+        with engine.connect() as conn:
+            # Agregar email_verified si no existe
+            conn.execute(text("""
+                DO $$ 
+                BEGIN
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                                  WHERE table_name='users' AND column_name='email_verified') THEN
+                        ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT FALSE;
+                    END IF;
+                END $$;
+            """))
+            # Agregar dark_mode si no existe
+            conn.execute(text("""
+                DO $$ 
+                BEGIN
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                                  WHERE table_name='users' AND column_name='dark_mode') THEN
+                        ALTER TABLE users ADD COLUMN dark_mode BOOLEAN DEFAULT FALSE;
+                    END IF;
+                END $$;
+            """))
+            # Agregar tienda si no existe
+            conn.execute(text("""
+                DO $$ 
+                BEGIN
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                                  WHERE table_name='productos' AND column_name='tienda') THEN
+                        ALTER TABLE productos ADD COLUMN tienda VARCHAR;
+                    END IF;
+                END $$;
+            """))
+            conn.commit()
+            print("Migraciones completadas exitosamente")
+    except Exception as e:
+        print(f"Error en migraciones: {str(e)}")
     print("Base de datos lista")
     yield
     # Shutdown
