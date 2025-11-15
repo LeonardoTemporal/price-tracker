@@ -89,10 +89,13 @@ allowed_origins = os.getenv(
     "http://localhost:5173,http://localhost:5174,http://localhost:3000"
 ).split(",")
 
+# Limpiar espacios en blanco de cada origen
+allowed_origins = [origin.strip() for origin in allowed_origins]
+
 # Configurar CORS - Debe ir ANTES de definir las rutas
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permitir todos los orígenes para testing en red local
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
