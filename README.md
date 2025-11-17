@@ -444,7 +444,7 @@ Este script elimina la base de datos antigua y crea una nueva con todas las tabl
 
 ## Licencia
 
-**Copyright © 2025 Leonardo Acosta (HellSpawn). Todos los Derechos Reservados.**
+**Copyright © 2025 Leonardo Temporal (HellSpawn). Todos los Derechos Reservados.**
 
 Este proyecto tiene **licencia propietaria**. El código es visible públicamente para fines de demostración, portafolio y referencia educativa.
 
@@ -459,7 +459,7 @@ Ver [LICENSE.md](LICENSE.md) para términos completos.
 
 ## Autor
 
-**Leonardo Acosta (HellSpawn)**
+**Leonardo Temporal (HellSpawn)**
 - Email: pricy.pricetracker@gmail.com
 - GitHub: [@LeonardoTemporal](https://github.com/LeonardoTemporal)
 
