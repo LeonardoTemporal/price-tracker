@@ -1,81 +1,21 @@
-# Licencia Propietaria - Pricy Price Tracker
+MIT License
 
-**Copyright © 2025 Leonardo Temporal (HellSpawn). Todos los Derechos Reservados.**
+Copyright (c) 2025 Leonardo Temporal
 
----
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-## Términos de Uso
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-Este repositorio y todo su contenido (código fuente, documentación, diseños, y recursos asociados) son propiedad exclusiva de Leonardo Temporal.
-
-### Permitido
-
-- Visualizar el código con fines educativos y de referencia
-- Clonar el repositorio para revisar el código localmente
-- Mencionar este proyecto en artículos, tutoriales o referencias (con atribución)
-- Enlazar a este repositorio desde otros sitios web o portafolios
-
-### No Permitido (Sin Autorización Explícita)
-
-- Copiar, modificar, o distribuir el código (total o parcialmente)
-- Usar el código en proyectos personales o comerciales
-- Crear trabajos derivados basados en este código
-- Vender, sublicenciar, o redistribuir el software
-- Hacer ingeniería inversa con fines comerciales
-- Usar el nombre "Pricy", logotipos, o marca sin permiso
-
----
-
-## Uso Educativo
-
-Si eres estudiante, profesor, o creador de contenido educativo y deseas usar este proyecto:
-- Contacta a: **pricy.pricetracker@gmail.com**
-- Especifica el uso que le darás
-- Se evaluará caso por caso
-
----
-
-## Uso Comercial / Licenciamiento
-
-Para consultas sobre:
-- Licenciamiento comercial
-- Colaboraciones
-- Uso en empresas o startups
-- Personalización o desarrollo a medida
-
-**Contacto:** pricy.pricetracker@gmail.com
-
----
-
-## Aplicación Legal
-
-Esta licencia se rige por las leyes de **México** y cualquier disputa será resuelta en los tribunales competentes de dicha jurisdicción.
-
-El incumplimiento de estos términos puede resultar en acciones legales, incluyendo pero no limitado a reclamaciones por daños y perjuicios.
-
----
-
-## Aviso de Privacidad
-
-Este proyecto utiliza servicios de terceros (Supabase, Resend, Render) que tienen sus propias políticas de privacidad. El autor no se hace responsable del uso indebido de datos por parte de terceros.
-
----
-
-## Atribución
-
-Si mencionas o referencías este proyecto, usa:
-
-```
-Pricy Price Tracker por Leonardo Temporal (HellSpawn)
-https://github.com/LeonardoTemporal/price-tracker
-```
-
----
-
-## Última actualización
-
-14 de noviembre de 2025
-
----
-
-**Para cualquier pregunta sobre esta licencia, contacta a:** pricy.pricetracker@gmail.com
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

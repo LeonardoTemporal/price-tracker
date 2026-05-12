@@ -2,7 +2,11 @@
 FastAPI Application - Price Tracker Backend v3.0
 API REST con autenticación JWT y PostgreSQL
 
-Author: HellSpawn
+This module initializes the FastAPI application, configures CORS,
+sets up database connections, and includes all API routers.
+
+Author: Leonardo Temporal
+License: MIT
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,8 +28,14 @@ from backend.app.database import init_db
 # Configuración de eventos de inicio/cierre
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """
+    Manage application lifespan events.
+
+    On startup: initializes the database and runs migrations.
+    On shutdown: performs cleanup operations.
+    """
     # Startup: inicializar base de datos y ejecutar migraciones
-    print("Iniciando Price Tracker API v3.0 con autenticación...")
+    print("Iniciando Price Tracker API v3.0 con autenticacion...")
     print("Inicializando base de datos...")
     init_db()
     print("Ejecutando migraciones de base de datos...")
@@ -35,9 +45,9 @@ async def lifespan(app: FastAPI):
         with engine.connect() as conn:
             # Agregar email_verified si no existe
             conn.execute(text("""
-                DO $$ 
+                DO $$
                 BEGIN
-                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                                   WHERE table_name='users' AND column_name='email_verified') THEN
                         ALTER TABLE users ADD COLUMN email_verified BOOLEAN DEFAULT FALSE;
                     END IF;
@@ -45,9 +55,9 @@ async def lifespan(app: FastAPI):
             """))
             # Agregar dark_mode si no existe
             conn.execute(text("""
-                DO $$ 
+                DO $$
                 BEGIN
-                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                                   WHERE table_name='users' AND column_name='dark_mode') THEN
                         ALTER TABLE users ADD COLUMN dark_mode BOOLEAN DEFAULT FALSE;
                     END IF;
@@ -55,9 +65,9 @@ async def lifespan(app: FastAPI):
             """))
             # Agregar tienda si no existe
             conn.execute(text("""
-                DO $$ 
+                DO $$
                 BEGIN
-                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                                   WHERE table_name='productos' AND column_name='tienda') THEN
                         ALTER TABLE productos ADD COLUMN tienda VARCHAR;
                     END IF;
@@ -117,7 +127,7 @@ app = FastAPI(
     },
     license_info={
         "name": "MIT License",
-        "url": "https://opensource.org/licenses/MIT"
+        "url": "https://github.com/LeonardoTemporal/price-tracker/blob/main/LICENSE.md"
     },
     lifespan=lifespan
 )
@@ -143,7 +153,7 @@ for origin in development_origins:
     if origin not in allowed_origins:
         allowed_origins.append(origin)
 
-print(f"🌐 CORS allowed origins: {allowed_origins}")  # Debug
+print(f"CORS allowed origins: {allowed_origins}")  # Debug log
 
 # Configurar CORS - Debe ir ANTES de definir las rutas
 app.add_middleware(

@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  # PostgreSQL database (optional - for production-like environments)
+  # Uncomment if you prefer PostgreSQL over SQLite
+  # db:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_USER: pricetracker
+  #     POSTGRES_PASSWORD: pricetracker
+  #     POSTGRES_DB: price_tracker
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U pricetracker"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - ALGORITHM=${ALGORITHM:-HS256}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./price_tracker.db}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000}
+    volumes:
+      # Persist SQLite database across container restarts
+      - ./price_tracker.db:/app/price_tracker.db
+    # Uncomment if using PostgreSQL:
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    command: >
+      sh -c "python -c 'from backend.app.database import init_db; init_db()' &&
+             python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000"
+    restart: unless-stopped
+
+  # React Frontend (Vite dev server)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000/api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+# Uncomment if using PostgreSQL:
+# volumes:
+#   postgres_data:

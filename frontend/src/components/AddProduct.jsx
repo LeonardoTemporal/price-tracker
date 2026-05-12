@@ -76,7 +76,7 @@ export default function AddProduct() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            URL del Producto *
+            URL del Producto*
           </label>
           <div className="flex space-x-2">
             <input

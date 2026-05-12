@@ -8,6 +8,7 @@ from typing import Optional, List
 from datetime import datetime
 
 
+
 # ========== Schemas de Autenticación ==========
 
 class UserBase(BaseModel):
