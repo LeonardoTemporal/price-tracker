@@ -42,14 +42,14 @@ class TestScraperGeneric:
         """Proporciona una instancia de PriceScraper para los tests."""
         return PriceScraper()
 
-    def test_limpieza_precio_con_comas(self, scraper: PriceScraper):
-        """Debe limpiar correctamente precios con comas como separador de miles."""
-        precio_limpio = scraper._clean_price("1,234.56")
+    def test_limpieza_precio_formato_europeo(self, scraper: PriceScraper):
+        """Debe limpiar precios en formato europeo (punto miles, coma decimal)."""
+        precio_limpio = scraper._clean_price("1.234,56")
         assert precio_limpio == 1234.56
 
-    def test_limpieza_precio_con_punto_miles(self, scraper: PriceScraper):
-        """Debe limpiar precios con punto como separador de miles (formato MXN)."""
-        precio_limpio = scraper._clean_price("2.345")
+    def test_limpieza_precio_coma_separador_miles(self, scraper: PriceScraper):
+        """Debe limpiar precios con coma como separador de miles."""
+        precio_limpio = scraper._clean_price("2,345")
         assert precio_limpio == 2345.0
 
     def test_deteccion_dominio_mercadolibre(self, scraper: PriceScraper):
