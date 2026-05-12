@@ -85,6 +85,8 @@ export const productosAPI = {
   actualizarTodos: () => api.post('/productos/actualizar-todos'),
   testUrl: (url) => api.post('/productos/test-url', { url }),
   estadisticas: () => api.get('/productos/estadisticas/resumen'),
+  predict: (id) => api.get(`/predict/${id}`),
+  trend: (id) => api.get(`/predict/${id}/trend`),
 };
 
 // Historial

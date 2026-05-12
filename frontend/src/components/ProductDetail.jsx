@@ -12,6 +12,7 @@ import {
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useTheme } from '../contexts/ThemeContext';
+import PricePrediction from './PricePrediction';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -180,6 +181,9 @@ export default function ProductDetail() {
           </p>
         </div>
       </div>
+
+      {/* Prediccion IA */}
+      <PricePrediction productoId={id} precioObjetivo={producto.precio_objetivo} />
 
       {/* Grafico */}
       {chartData.length > 0 ? (

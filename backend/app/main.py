@@ -21,8 +21,9 @@ load_dotenv()
 # Añadir el directorio raíz al path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from backend.app.routers import auth, productos_auth, feedback, historial, alertas
+from backend.app.routers import auth, productos_auth, feedback, historial, alertas, predictions
 from backend.app.database import init_db
+from backend.app.mcp_server import router as mcp_router
 
 
 # Configuración de eventos de inicio/cierre
@@ -191,6 +192,8 @@ app.include_router(productos_auth.router, prefix="/api")
 app.include_router(feedback.router, prefix="/api")
 app.include_router(historial.router, prefix="/api")
 app.include_router(alertas.router, prefix="/api")
+app.include_router(predictions.router, prefix="/api")
+app.include_router(mcp_router, prefix="/api")
 
 
 if __name__ == "__main__":
