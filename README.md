@@ -82,6 +82,30 @@ npm run dev
 
 ---
 
+## Deployment
+
+### Dokploy (Self-Hosted)
+
+Deploy on your own server with [Dokploy](https://dokploy.com/):
+
+**Requirements:**
+- Ubuntu server with Dokploy installed (port 3000)
+- Docker and Docker Compose
+
+**Steps:**
+1. Connect your GitHub repository in the Dokploy dashboard
+2. Copy environment variables from `dokploy.env.example` into Dokploy
+3. Update `ALLOWED_ORIGINS` with your frontend domain
+4. Deploy - Dokploy auto-detects `dokploy-compose.yml`
+
+**Files used:**
+- `Dockerfile.backend` - FastAPI multistage build
+- `Dockerfile.frontend` - React SPA + nginx
+- `dokploy-compose.yml` - Full stack orchestration
+- `nginx.conf` - SPA routing + compression
+
+---
+
 ## Architecture
 
 ```
