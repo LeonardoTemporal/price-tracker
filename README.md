@@ -76,7 +76,7 @@ git clone https://github.com/LeonardoTemporal/price-tracker.git
 cd price-tracker
 
 # Run the setup script (Windows)
-start-all.bat
+scripts/windows/start-all.bat
 
 # Or manual steps:
 python -m venv .venv
