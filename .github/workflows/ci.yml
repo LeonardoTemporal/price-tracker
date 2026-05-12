@@ -48,9 +48,6 @@ jobs:
   frontend-build:
     name: Frontend Build
     runs-on: ubuntu-latest
-    # Frontend build may fail due to pre-existing dependency issues
-    # This does not block the overall CI status
-    continue-on-error: true
 
     steps:
     - uses: actions/checkout@v4
