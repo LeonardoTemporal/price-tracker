@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-05-12
+
+### Added
+
+#### AI-Powered Price Prediction
+- New endpoint `/api/predict/{product_id}` using linear regression
+- Frontend component with trend indicator and confidence score
+- Predicts price direction and estimated dates to reach target price
+
+#### MCP Server Integration
+- Full Model Context Protocol server with 6 tools
+- Claude Code can now query prices, add products, and check alerts directly
+- Documentation: `docs/MCP_INTEGRATION.md`
+
+#### Dark Mode
+- System preference detection + manual toggle
+- Full UI coverage with Tailwind dark variants
+- Persistent theme preference per user
+
+#### Production Deployment
+- Dokploy-ready with multi-stage Docker builds
+- PostgreSQL support with health checks
+- Nginx SPA configuration with security headers
+- Auto-deploy via GitHub Actions webhook
+
+#### Quality
+- 24+ backend tests passing (Python 3.8-3.11)
+- CI/CD with GitHub Actions
+- MIT License
+- Full contribution infrastructure (CONTRIBUTING.md, CODE_OF_CONDUCT.md)
+
+---
+
 ## [1.0.0] - 2025-01-12
 
 ### Added
