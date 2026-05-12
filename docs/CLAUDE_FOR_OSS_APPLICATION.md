@@ -2,33 +2,18 @@
 
 ## Narrative
 
-I am the primary maintainer of Pricy Price Tracker, an open-source full-stack starter kit for building price monitoring and alerting systems. While the repository is early in its star growth, it serves as foundational infrastructure that developers clone and adapt for their own monitoring use cases.
+I am the primary maintainer and architect of Pricy Price Tracker, an open-source intelligent monitoring platform. It serves as foundational infrastructure for developers building price tracking, alerting, and prediction systems.
 
-The project provides:
+The project is distinguished by its native Model Context Protocol (MCP) Server integration — allowing Claude Code and compatible AI tools to interact directly with the platform via structured tools for querying prices, managing products, checking alerts, and running predictions. This expands the MCP ecosystem into the monitoring and e-commerce space.
 
-- A production-ready FastAPI + React architecture with JWT auth
-- A multi-strategy web scraping engine supporting major e-commerce sites
-- Interactive data visualization and real-time dashboards
-- Complete CI/CD, testing, and Docker deployment setup
+Key technical components:
+- MCP Server with 6 exposed tools
+- AI Price Prediction engine using linear regression with confidence scoring
+- Full-stack architecture: FastAPI + React 18 + JWT auth + SQLAlchemy 2.0
+- Production deployment: Multi-stage Docker builds, Dokploy orchestration, PostgreSQL
+- Quality: 24+ automated tests, GitHub Actions CI/CD, MIT License
+- Developer experience: Dark mode, PWA support, comprehensive documentation
 
-I actively maintain the project with regular commits, review community contributions, and provide support to developers building on top of it. The codebase is designed as a learning resource and starting point for developers entering full-stack development with modern Python and React patterns.
-
-## Repository
-
-https://github.com/LeonardoTemporal/price-tracker
-
-## Application Text (Copy-Paste Ready)
-
-```
-I am the primary maintainer of Pricy Price Tracker, an open-source full-stack starter kit for building price monitoring and alerting systems. While the repository is early in its star growth, it serves as foundational infrastructure that developers clone and adapt for their own monitoring use cases.
-
-The project provides:
-- A production-ready FastAPI + React architecture with JWT auth
-- A multi-strategy web scraping engine supporting major e-commerce sites
-- Interactive data visualization and real-time dashboards
-- Complete CI/CD, testing, and Docker deployment setup
-
-I actively maintain the project with regular commits, review community contributions, and provide support to developers building on top of it. The codebase is designed as a learning resource and starting point for developers entering full-stack development with modern Python and React patterns.
+I actively maintain the project with regular releases, review contributions within 24 hours, and continuously expand the platform.
 
 Repository: https://github.com/LeonardoTemporal/price-tracker
-```

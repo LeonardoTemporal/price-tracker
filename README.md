@@ -42,6 +42,23 @@ Perfect as a **starter kit** for building monitoring systems, learning modern fu
 - Touch-optimized buttons (44px minimum)
 - Clean, modern interface
 
+### Intelligent Features
+
+#### AI Price Prediction
+- Predicts price trends using linear regression over historical data
+- Confidence scoring and estimated target date calculation
+- Visual indicator in product detail view
+
+#### MCP Server Integration
+- Full Model Context Protocol server for external AI tools
+- 6 exposed tools: get_product_price, add_product, get_alerts, update_prices, get_price_history, predict_price
+- Claude Code can interact directly with your price tracker
+- Documentation in `docs/MCP_INTEGRATION.md`
+
+#### Dark Mode
+- System preference detection + manual toggle
+- Full UI coverage with Tailwind dark variants
+
 ---
 
 ## Quick Start
@@ -153,6 +170,16 @@ price-tracker/
 | **Amazon** | Supported | Multi-selector extraction |
 | **eBay** | Supported | Domain-specific config |
 | **Generic sites** | Most sites work | Pattern-based fallback |
+
+---
+
+## Deployment Options
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| **Dokploy** | Ready | Multi-stage Docker, PostgreSQL, auto-deploy |
+| **Docker** | Ready | `docker-compose up` for local development |
+| **Local** | Ready | SQLite backend, Vite dev server |
 
 ---
 
