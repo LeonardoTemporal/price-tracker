@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import pytest
 
@@ -6,10 +6,10 @@ from backend.app.routers import productos_auth
 
 
 class FakeScraper:
-    def __init__(self, price: float | None):
+    def __init__(self, price: Optional[float]):
         self.price = price
 
-    async def get_price(self, url: str) -> float | None:  # pragma: no cover - clarifies signature
+    async def get_price(self, url: str) -> Optional[float]:  # pragma: no cover - clarifies signature
         return self.price
 
 
