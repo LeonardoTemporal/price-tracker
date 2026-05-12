@@ -8,6 +8,12 @@
 [![React 18](https://img.shields.io/badge/react-18-61DAFB.svg)](https://react.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688.svg)](https://fastapi.tiangolo.com/)
 
+## Screenshots
+
+| Login | Dashboard (Light) | Dashboard (Dark) | Product Detail |
+|-------|-------------------|------------------|----------------|
+| ![Login](docs/screenshots/login.png) | ![Dashboard Light](docs/screenshots/dashboard-light.png) | ![Dashboard Dark](docs/screenshots/dashboard-dark.png) | ![Product Detail](docs/screenshots/product-detail.png) |
+
 A professional, full-stack price tracking application built with **FastAPI** and **React**. Track product prices across multiple e-commerce sites, visualize price history with interactive charts, and receive alerts when products hit your target price.
 
 Perfect as a **starter kit** for building monitoring systems, learning modern full-stack architecture, or deploying your own price tracking service.
