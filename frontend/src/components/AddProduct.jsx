@@ -7,13 +7,13 @@ import { PlusCircle, TestTube, CheckCircle, XCircle, Loader } from 'lucide-react
 export default function AddProduct() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  
+
   const [formData, setFormData] = useState({
     nombre: '',
     url: '',
     precio_objetivo: '',
   });
-  
+
   const [testResult, setTestResult] = useState(null);
 
   const testUrlMutation = useMutation({
@@ -33,13 +33,13 @@ export default function AddProduct() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const data = {
       nombre: formData.nombre,
       url: formData.url,
       precio_objetivo: formData.precio_objetivo ? parseFloat(formData.precio_objetivo) : null,
     };
-    
+
     crearProductoMutation.mutate(data);
   };
 
@@ -54,14 +54,14 @@ export default function AddProduct() {
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Añadir Producto</h1>
-        <p className="text-gray-600 mt-1">Añade un nuevo producto para rastrear su precio</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Anadir Producto</h1>
+        <p className="text-gray-600 dark:text-gray-300 mt-1">Anade un nuevo producto para rastrear su precio</p>
       </div>
 
       {/* Formulario */}
       <form onSubmit={handleSubmit} className="card space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
             Nombre del Producto *
           </label>
           <input
@@ -75,7 +75,7 @@ export default function AddProduct() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
             URL del Producto*
           </label>
           <div className="flex space-x-2">
@@ -101,21 +101,21 @@ export default function AddProduct() {
               <span>Probar</span>
             </button>
           </div>
-          
+
           {/* Resultado del test */}
           {testResult && (
             <div className={`mt-3 p-4 rounded-lg ${
               testResult.accesible && testResult.precio
-                ? 'bg-green-50 border border-green-200'
-                : 'bg-yellow-50 border border-yellow-200'
+                ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+                : 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800'
             }`}>
               <div className="flex items-start space-x-2">
                 {testResult.accesible && testResult.precio ? (
                   <>
                     <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
                     <div>
-                      <p className="font-medium text-green-900">URL válida</p>
-                      <p className="text-sm text-green-700 mt-1">
+                      <p className="font-medium text-green-900 dark:text-green-200">URL valida</p>
+                      <p className="text-sm text-green-700 dark:text-green-300 mt-1">
                         Precio detectado: <span className="font-semibold">${testResult.precio.toFixed(2)}</span>
                       </p>
                     </div>
@@ -124,11 +124,11 @@ export default function AddProduct() {
                   <>
                     <XCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
                     <div>
-                      <p className="font-medium text-yellow-900">
+                      <p className="font-medium text-yellow-900 dark:text-yellow-200">
                         {testResult.accesible ? 'URL accesible pero sin precio' : 'Error al acceder'}
                       </p>
                       {testResult.error && (
-                        <p className="text-sm text-yellow-700 mt-1">{testResult.error}</p>
+                        <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">{testResult.error}</p>
                       )}
                     </div>
                   </>
@@ -139,11 +139,11 @@ export default function AddProduct() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
             Precio Objetivo (opcional)
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">$</span>
             <input
               type="number"
               step="0.01"
@@ -154,15 +154,15 @@ export default function AddProduct() {
               placeholder="0.00"
             />
           </div>
-          <p className="text-sm text-gray-500 mt-1">
-            Recibirás una alerta cuando el precio baje a este nivel
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Recibiras una alerta cuando el precio baje a este nivel
           </p>
         </div>
 
         {/* Error message */}
         {crearProductoMutation.isError && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-700">
+          <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p className="text-sm text-red-700 dark:text-red-300">
               {crearProductoMutation.error?.response?.data?.detail || 'Error al crear el producto'}
             </p>
           </div>
@@ -180,9 +180,9 @@ export default function AddProduct() {
             ) : (
               <PlusCircle className="w-5 h-5" />
             )}
-            <span>{crearProductoMutation.isPending ? 'Añadiendo...' : 'Añadir Producto'}</span>
+            <span>{crearProductoMutation.isPending ? 'Anadiendo...' : 'Anadir Producto'}</span>
           </button>
-          
+
           <button
             type="button"
             onClick={() => navigate('/productos')}

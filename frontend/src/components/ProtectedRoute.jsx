@@ -1,7 +1,7 @@
 /**
  * Protected Route Component
- * Redirige a login si el usuario no está autenticado
- * 
+ * Redirige a login si el usuario no esta autenticado
+ *
  * Author: HellSpawn
  */
 import { Navigate } from 'react-router-dom';
@@ -12,10 +12,10 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando...</p>
+          <p className="text-gray-600 dark:text-gray-300">Cargando...</p>
         </div>
       </div>
     );

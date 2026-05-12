@@ -31,17 +31,17 @@ export default function Dashboard() {
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Resumen de tu rastreador de precios</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1">Resumen de tu rastreador de precios</p>
       </div>
 
-      {/* Estadísticas */}
+      {/* Estadisticas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <div className="card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm text-gray-600">Total Productos</p>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{stats?.total_productos || 0}</p>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Total Productos</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-1">{stats?.total_productos || 0}</p>
             </div>
             <Package className="w-10 h-10 sm:w-12 sm:h-12 text-primary-600" />
           </div>
@@ -50,8 +50,8 @@ export default function Dashboard() {
         <div className="card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm text-gray-600">Alertas Activas</p>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{stats?.alertas_activas || 0}</p>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Alertas Activas</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-1">{stats?.alertas_activas || 0}</p>
             </div>
             <Bell className="w-10 h-10 sm:w-12 sm:h-12 text-yellow-600" />
           </div>
@@ -60,7 +60,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs sm:text-sm text-gray-600">Ahorro Potencial</p>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Ahorro Potencial</p>
               <p className="text-2xl sm:text-3xl font-bold text-green-600 mt-1">
                 ${stats?.ahorro_potencial?.toFixed(2) || '0.00'}
               </p>
@@ -72,23 +72,23 @@ export default function Dashboard() {
 
       {/* Alertas */}
       {alertas && alertas.length > 0 && (
-        <div className="card border-red-200 bg-red-50">
+        <div className="card border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800">
           <div className="flex items-center space-x-2 mb-3 sm:mb-4">
             <Bell className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
-            <h2 className="text-lg sm:text-xl font-bold text-red-900">Alertas de Precio</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-red-900 dark:text-red-200">Alertas de Precio</h2>
           </div>
-          
+
           <div className="space-y-3">
             {alertas.map((alerta) => (
-              <div key={alerta.id} className="bg-white p-3 sm:p-4 rounded-lg border border-red-200">
+              <div key={alerta.id} className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-red-200 dark:border-red-800">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{alerta.nombre}</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">{alerta.nombre}</h3>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-2 text-xs sm:text-sm space-y-1 sm:space-y-0">
-                      <span className="text-gray-600">
+                      <span className="text-gray-600 dark:text-gray-300">
                         Precio actual: <span className="font-semibold text-green-600">${alerta.precio_actual.toFixed(2)}</span>
                       </span>
-                      <span className="text-gray-600">
+                      <span className="text-gray-600 dark:text-gray-300">
                         Objetivo: <span className="font-semibold">${alerta.precio_objetivo.toFixed(2)}</span>
                       </span>
                     </div>
@@ -107,7 +107,7 @@ export default function Dashboard() {
       {/* Lista de productos recientes */}
       <div className="card">
         <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900">Productos Recientes</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Productos Recientes</h2>
           <Link to="/productos" className="text-sm sm:text-base text-primary-600 hover:text-primary-700 font-medium">
             Ver todos →
           </Link>
@@ -119,25 +119,25 @@ export default function Dashboard() {
               <Link
                 key={producto.id}
                 to={`/productos/${producto.id}`}
-                className="block p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-all"
+                className="block p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-primary-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{producto.nombre}</h3>
-                    <p className="text-xs sm:text-sm text-gray-500 mt-1">{producto.num_registros} registros</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">{producto.nombre}</h3>
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">{producto.num_registros} registros</p>
                   </div>
                   <div className="text-left sm:text-right">
                     {producto.precio_actual ? (
                       <>
-                        <p className="text-xl sm:text-2xl font-bold text-gray-900">${producto.precio_actual.toFixed(2)}</p>
-                        <div className="flex items-center sm:justify-end space-x-2 text-xs sm:text-sm text-gray-600 mt-1">
+                        <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">${producto.precio_actual.toFixed(2)}</p>
+                        <div className="flex items-center sm:justify-end space-x-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1">
                           <span>Min: ${producto.precio_min?.toFixed(2)}</span>
                           <span>•</span>
                           <span>Max: ${producto.precio_max?.toFixed(2)}</span>
                         </div>
                       </>
                     ) : (
-                      <p className="text-gray-500 text-sm">Sin datos</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm">Sin datos</p>
                     )}
                   </div>
                 </div>
@@ -153,9 +153,9 @@ export default function Dashboard() {
         ) : (
           <div className="text-center py-8 sm:py-12">
             <Package className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-sm sm:text-base text-gray-600">No hay productos en seguimiento</p>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">No hay productos en seguimiento</p>
             <Link to="/agregar" className="btn-primary mt-4 inline-block text-sm sm:text-base px-4 py-2 sm:px-6 sm:py-3">
-              Añadir tu primer producto
+              Anadir tu primer producto
             </Link>
           </div>
         )}

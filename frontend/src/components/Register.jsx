@@ -57,14 +57,13 @@ export default function Register() {
     e.preventDefault();
     setError('');
 
-    // Validaciones
     if (formData.password !== formData.confirmPassword) {
-      setError('Las contraseñas no coinciden');
+      setError('Las contrasenas no coinciden');
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
+      setError('La contrasena debe tener al menos 6 caracteres');
       return;
     }
 
@@ -74,10 +73,9 @@ export default function Register() {
     }
 
     setLoading(true);
-    
+
     try {
       await register(formData.email, formData.username, formData.password);
-      // Redirigir a verificación de email
       navigate('/verify-email', {
         state: {
           email: formData.email,
@@ -93,26 +91,26 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center px-4 py-8">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-2xl p-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-900 dark:to-pink-900 flex items-center justify-center px-4 py-8">
+      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-2xl p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
             Crear Cuenta
           </h1>
-          <p className="text-gray-600">
-            Únete a Price Tracker
+          <p className="text-gray-600 dark:text-gray-300">
+            Unete a Price Tracker
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
               Email
             </label>
             <input
@@ -120,14 +118,14 @@ export default function Register() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="tu@email.com"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
               Usuario
             </label>
             <div className="relative">
@@ -136,7 +134,7 @@ export default function Register() {
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 pr-12"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pr-12"
                 placeholder="usuario123"
                 required
                 minLength={3}
@@ -154,8 +152,8 @@ export default function Register() {
               )}
             </div>
             <div className="flex items-center justify-between mt-1">
-              <p className="text-xs text-gray-500">
-                Mínimo 3 caracteres
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Minimo 3 caracteres
               </p>
               {formData.username.length >= 3 && usernameAvailable !== null && (
                 <p className={`text-xs ${usernameAvailable ? 'text-green-600' : 'text-red-600'}`}>
@@ -166,8 +164,8 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Contraseña
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+              Contrasena
             </label>
             <div className="relative">
               <input
@@ -175,7 +173,7 @@ export default function Register() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 pr-12"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pr-12"
                 placeholder="••••••••"
                 required
                 minLength={6}
@@ -183,7 +181,7 @@ export default function Register() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 {showPassword ? (
                   <EyeOff className="w-5 h-5" />
@@ -192,14 +190,14 @@ export default function Register() {
                 )}
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Mínimo 6 caracteres
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Minimo 6 caracteres
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Confirmar Contraseña
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+              Confirmar Contrasena
             </label>
             <div className="relative">
               <input
@@ -207,14 +205,14 @@ export default function Register() {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 pr-12"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white pr-12"
                 placeholder="••••••••"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 {showConfirmPassword ? (
                   <EyeOff className="w-5 h-5" />
@@ -235,16 +233,16 @@ export default function Register() {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-gray-600">
-            ¿Ya tienes cuenta?{' '}
+          <p className="text-gray-600 dark:text-gray-300">
+            Ya tienes cuenta?{' '}
             <Link to="/login" className="text-purple-600 hover:text-purple-700 font-semibold">
-              Inicia sesión aquí
+              Inicia sesion aqui
             </Link>
           </p>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-500 text-center">
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
             Desarrollado por HellSpawn
           </p>
         </div>
